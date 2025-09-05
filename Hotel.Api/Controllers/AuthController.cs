@@ -32,15 +32,13 @@ namespace Hotel.Api.Controllers
 
         [Authorize]
         [HttpGet("me")]
-        public async Task<IActionResult> Me()
+        public IActionResult Me()
         {
-            // Optionally fetch more info; here we just echo claims
             return Ok(new {
-                Id = User.FindFirst("sub")?.Value,
-                Username = User.Identity?.Name,
-                Role = User.FindFirst("role")?.Value
+                Id = User.FindFirst("sub")?.Value,          // subject claim from token
+                Username = User.Identity?.Name,               // ClaimTypes.Name
+                Role = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value
             });
         }
     }
 }
-

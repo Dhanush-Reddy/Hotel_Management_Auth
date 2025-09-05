@@ -16,7 +16,7 @@ namespace Hotel.Infrastructure.Repositories
         {
             using var conn = _factory.CreateConnection();
             return await conn.QueryFirstOrDefaultAsync<User>(
-                "SELECT TOP 1 * FROM Users WHERE Username = @Username AND ActiveFlag = 1",
+                "SELECT TOP 1 * FROM Users WHERE Username=@Username AND ActiveFlag=1",
                 new { Username = username });
         }
 
@@ -24,7 +24,7 @@ namespace Hotel.Infrastructure.Repositories
         {
             using var conn = _factory.CreateConnection();
             return await conn.QueryFirstOrDefaultAsync<User>(
-                "SELECT TOP 1 * FROM Users WHERE Id = @Id",
+                "SELECT TOP 1 * FROM Users WHERE Id=@Id",
                 new { Id = id });
         }
 
@@ -32,11 +32,10 @@ namespace Hotel.Infrastructure.Repositories
         {
             using var conn = _factory.CreateConnection();
             var offset = (page - 1) * pageSize;
-            var like = q is null ? null : $"%{q}%";
+            var like = string.IsNullOrWhiteSpace(q) ? null : $"%{q}%";
             var sql = @"
 SELECT * FROM Users
-WHERE ActiveFlag = 1
-AND (@q IS NULL OR Username LIKE @like)
+WHERE ActiveFlag=1 AND (@q IS NULL OR Username LIKE @like)
 ORDER BY Id DESC
 OFFSET @offset ROWS FETCH NEXT @ps ROWS ONLY;";
             return await conn.QueryAsync<User>(sql, new { q, like, offset, ps = pageSize });
@@ -46,8 +45,8 @@ OFFSET @offset ROWS FETCH NEXT @ps ROWS ONLY;";
         {
             using var conn = _factory.CreateConnection();
             var sql = @"
-INSERT INTO Users (Username, PasswordHash, Role, ActiveFlag, CreatedAt)
-VALUES (@Username, @PasswordHash, @Role, @ActiveFlag, @CreatedAt);
+INSERT INTO Users(Username, PasswordHash, Role, ActiveFlag)
+VALUES(@Username, @PasswordHash, @Role, @ActiveFlag);
 SELECT CAST(SCOPE_IDENTITY() AS INT);";
             return await conn.ExecuteScalarAsync<int>(sql, user);
         }
@@ -68,20 +67,25 @@ SELECT CAST(SCOPE_IDENTITY() AS INT);";
         public async Task UpdatePasswordHashAsync(int id, string newHash)
         {
             using var conn = _factory.CreateConnection();
-            await conn.ExecuteAsync("UPDATE Users SET PasswordHash=@newHash WHERE Id=@Id;", new { Id = id, newHash });
+            await conn.ExecuteAsync(
+                "UPDATE Users SET PasswordHash=@newHash WHERE Id=@Id;",
+                new { Id = id, newHash });
         }
 
         public async Task UpdateRoleAsync(int id, string role)
         {
             using var conn = _factory.CreateConnection();
-            await conn.ExecuteAsync("UPDATE Users SET Role=@role WHERE Id=@Id;", new { Id = id, role });
+            await conn.ExecuteAsync(
+                "UPDATE Users SET Role=@role WHERE Id=@Id;",
+                new { Id = id, role });
         }
 
         public async Task SetActiveAsync(int id, bool active)
         {
             using var conn = _factory.CreateConnection();
-            await conn.ExecuteAsync("UPDATE Users SET ActiveFlag=@active WHERE Id=@Id;", new { Id = id, active });
+            await conn.ExecuteAsync(
+                "UPDATE Users SET ActiveFlag=@active WHERE Id=@Id;",
+                new { Id = id, active });
         }
     }
 }
-

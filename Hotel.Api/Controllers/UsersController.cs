@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Hotel.Application.Interfaces;
@@ -16,7 +17,18 @@ namespace Hotel.Api.Controllers
 
         [HttpGet]
         public async Task<IActionResult> GetAll([FromQuery] int page = 1, [FromQuery] int pageSize = 50, [FromQuery] string? q = null)
-            => Ok(await _users.GetAllAsync(page, pageSize, q));
+        {
+            var users = await _users.GetAllAsync(page, pageSize, q);
+            var dtos = users.Select(u => new UserResponse
+            {
+                Id = u.Id,
+                Username = u.Username,
+                Role = u.Role,
+                ActiveFlag = u.ActiveFlag,
+                CreatedAt = u.CreatedAt
+            });
+            return Ok(dtos);
+        }
 
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateUserRequest req)
@@ -29,7 +41,17 @@ namespace Hotel.Api.Controllers
         public async Task<IActionResult> GetById(int id)
         {
             var user = await _users.GetByIdAsync(id);
-            return user is null ? NotFound() : Ok(user);
+            if (user is null) return NotFound();
+
+            var dto = new UserResponse
+            {
+                Id = user.Id,
+                Username = user.Username,
+                Role = user.Role,
+                ActiveFlag = user.ActiveFlag,
+                CreatedAt = user.CreatedAt
+            };
+            return Ok(dto);
         }
 
         [HttpPut("{id:int}/role")]
@@ -54,4 +76,3 @@ namespace Hotel.Api.Controllers
         }
     }
 }
-
