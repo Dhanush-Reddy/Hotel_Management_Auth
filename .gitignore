@@ -34,3 +34,6 @@ packages/
 coverage/
 TestResult*/
 
+# Local configuration (do not commit secrets)
+**/appsettings.*.local.json
+**/secrets.json
