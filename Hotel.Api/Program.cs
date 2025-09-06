@@ -1,9 +1,10 @@
 using System.Text;
-using Hotel.Application.Interfaces;
-using Hotel.Application.Services;
-using Hotel.Infrastructure.Data;
-using Hotel.Infrastructure.Repositories;
-using Hotel.Infrastructure.Security;
+using Hotel.Application.Features.Users.Interfaces;
+using Hotel.Application.Features.Users.Services;
+using Hotel.Application.Common.Interfaces;
+using Hotel.Infrastructure.Common.Data;
+using Hotel.Infrastructure.Features.Users.Repositories;
+using Hotel.Infrastructure.Features.Auth.Security;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
