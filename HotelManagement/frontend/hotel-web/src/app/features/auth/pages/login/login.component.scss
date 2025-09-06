@@ -2,3 +2,12 @@
 mat-card { width: 360px; }
 .full { width: 100%; }
 
+/* Highlight password field on login error */
+.error-field .mdc-notched-outline__leading,
+.error-field .mdc-notched-outline__notch,
+.error-field .mdc-notched-outline__trailing {
+  border-color: #f44336 !important; /* Material warn */
+}
+.error-field .mdc-floating-label {
+  color: #f44336 !important;
+}

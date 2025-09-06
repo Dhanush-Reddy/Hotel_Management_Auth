@@ -31,7 +31,7 @@ export class RoomsListComponent implements OnInit {
   load(){
     this.loading = true;
     this.api.list(this.q, this.status).subscribe({
-      next: d => { this.data.data = d; this.loading = false; },
+      next: d => { this.data.data = d.sort((a,b)=>a.id-b.id); this.loading = false; },
       error: _ => { this.loading = false; }
     });
   }

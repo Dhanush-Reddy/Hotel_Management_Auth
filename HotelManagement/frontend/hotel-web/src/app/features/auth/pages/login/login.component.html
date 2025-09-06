@@ -8,9 +8,10 @@
           <input matInput [(ngModel)]="username" name="username" required autocomplete="username">
         </mat-form-field>
 
-        <mat-form-field appearance="outline" class="full">
+        <mat-form-field appearance="outline" class="full" [class.error-field]="loginError" [color]="loginError ? 'warn' : 'primary'">
           <mat-label>Password</mat-label>
-          <input matInput [(ngModel)]="password" name="password" type="password" required autocomplete="current-password">
+          <input matInput [(ngModel)]="password" (ngModelChange)="loginError=false" name="password" type="password" required autocomplete="current-password">
+          <mat-error *ngIf="loginError">Invalid username or password</mat-error>
         </mat-form-field>
 
         <button mat-flat-button color="primary" class="full" [disabled]="loading">
@@ -20,4 +21,3 @@
     </mat-card-content>
   </mat-card>
   </div>
-

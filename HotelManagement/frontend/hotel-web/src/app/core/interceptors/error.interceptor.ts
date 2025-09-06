@@ -10,9 +10,12 @@ export class ErrorInterceptor implements HttpInterceptor {
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(req).pipe(
       catchError((err: HttpErrorResponse) => {
-        if (err.status === 401) this.auth.logout();
-        const message = (err.error?.message as string) ?? `Error ${err.status}`;
-        alert(message);
+        const isLogin = req.url.includes('/api/auth/login');
+        if (err.status === 401 && !isLogin) this.auth.logout();
+        if (!isLogin) {
+          const message = (err.error?.message as string) ?? `Error ${err.status}`;
+          alert(message);
+        }
         return throwError(() => err);
       })
     );
