@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Hotel.Application.Features.Bookings.Interfaces;
 using Hotel.Application.Features.Rooms.Interfaces;
 using Hotel.Application.Common.Interfaces;
+using Hotel.Application.Features.Billing.Interfaces;
 
 namespace Hotel.Application.Features.Bookings.Services
 {
@@ -12,12 +13,14 @@ namespace Hotel.Application.Features.Bookings.Services
         private readonly IBookingRepository _repo;
         private readonly IRoomRepository _rooms;
         private readonly IHotelClock _clock;
+        private readonly IInvoiceService _invoices;
 
-        public BookingService(IBookingRepository repo, IRoomRepository rooms, IHotelClock clock)
+        public BookingService(IBookingRepository repo, IRoomRepository rooms, IHotelClock clock, IInvoiceService invoices)
         {
             _repo = repo;
             _rooms = rooms;
             _clock = clock;
+            _invoices = invoices;
         }
 
         public async Task<int> CreateAsync(int roomId, int guestId, DateTime startDate, DateTime endDate, decimal? nightlyRate, string? notes, int createdByUserId)
@@ -62,6 +65,7 @@ namespace Hotel.Application.Features.Bookings.Services
             var b = await _repo.GetByIdAsync(id) ?? throw new KeyNotFoundException("Booking not found");
             if (!string.Equals(b.Status, "CheckedIn", StringComparison.OrdinalIgnoreCase)) throw new InvalidOperationException("Only CheckedIn bookings can be checked out");
             await _repo.UpdateStatusAsync(id, "CheckedOut");
+            try { await _invoices.CreateForBookingAsync(id); } catch { }
         }
 
         public async Task CancelAsync(int id)

@@ -1,0 +1,11 @@
+.toolbar { display:flex; gap:12px; align-items:center; margin-bottom:12px; }
+.toolbar .grow { flex: 1 1 420px; }
+.toolbar .mat-mdc-form-field { margin: 0; margin-bottom: 0; }
+.toolbar mat-form-field { margin: 0; min-width: 260px; }
+.toolbar .search-btn { height: 56px; align-self: center; transform: translateY(-12px); }
+.toolbar .spacer { flex: 1; }
+table { width: 100%; }
+
+.invoice-actions { display:flex; gap:12px; align-items:center; margin-top: 8px; }
+.invoice-actions .mat-mdc-form-field { margin: 0; }
+.invoice-actions mat-form-field { min-width: 240px; }

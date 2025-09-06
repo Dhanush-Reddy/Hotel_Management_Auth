@@ -6,7 +6,7 @@
         <mat-label>Search name / email / phone</mat-label>
         <input matInput [(ngModel)]="q" (keyup.enter)="load()">
       </mat-form-field>
-      <button mat-raised-button color="primary" (click)="load()" [disabled]="loading">
+      <button mat-raised-button class="search-btn" color="primary" (click)="load()" [disabled]="loading">
         <mat-icon>search</mat-icon>&nbsp;Search
       </button>
       <span class="spacer"></span>
@@ -49,7 +49,6 @@
     </table>
   </mat-card-content>
 </mat-card>
-
 
 
 

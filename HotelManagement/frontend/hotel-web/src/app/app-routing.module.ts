@@ -8,6 +8,7 @@ const routes: Routes = [
   { path: 'guests', loadChildren: () => import('./features/guests/guests.module').then(m => m.GuestsModule) },
   { path: '', redirectTo: 'rooms', pathMatch: 'full' },
   { path: 'bookings', loadChildren: () => import('./features/bookings/bookings.module').then(m => m.BookingsModule) },
+  { path: 'invoices', loadChildren: () => import('./features/invoices/invoices.module').then(m => m.InvoicesModule) },
   { path: '**', component: NotFoundComponent }
 ];
 

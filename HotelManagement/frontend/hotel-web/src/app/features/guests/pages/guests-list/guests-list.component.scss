@@ -1,4 +1,9 @@
 .toolbar { display:flex; gap:12px; align-items:center; margin-bottom:12px; }
 .toolbar .spacer { flex:1; }
 .grow { flex: 1 1 420px; }
+/* Align fields and buttons */
+.toolbar .mat-mdc-form-field { margin: 0; margin-bottom: 0; }
+.toolbar mat-form-field { margin: 0; min-width: 300px; }
+/* Make action buttons match form-field height */
+.toolbar .search-btn { height: 56px; align-self: center; transform: translateY(-12px); }
 table { width: 100%; }

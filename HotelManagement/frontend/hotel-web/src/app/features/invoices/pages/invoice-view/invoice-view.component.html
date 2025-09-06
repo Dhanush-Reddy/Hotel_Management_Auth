@@ -1,0 +1,25 @@
+<mat-card *ngIf="inv">
+  <mat-card-title>Invoice #{{ inv.id }}</mat-card-title>
+  <mat-card-content>
+    <div class="grid">
+      <p><strong>Booking:</strong> #{{ inv.bookingId }}</p>
+      <p><strong>Guest:</strong> {{ inv.guestName }}</p>
+      <p><strong>Room:</strong> {{ inv.roomNumber }}</p>
+      <p><strong>Issued:</strong> {{ inv.issuedAt | date:'medium' }}</p>
+      <p><strong>Status:</strong> {{ inv.status }}</p>
+      <p><strong>Nights:</strong> {{ inv.nights }}</p>
+      <p><strong>Rate:</strong> ₹ {{ inv.nightlyRate | number:'1.0-0' }}</p>
+      <p><strong>Total:</strong> <b>₹ {{ inv.totalAmount | number:'1.0-0' }}</b></p>
+    </div>
+
+    <div class="actions">
+      <button mat-raised-button color="primary" (click)="pay()" [disabled]="paying || inv.status==='Paid'">
+        <mat-icon>payments</mat-icon> Mark Paid
+      </button>
+      <button mat-raised-button color="accent" (click)="download()" [disabled]="downloading">
+        <mat-icon>download</mat-icon> Download PDF
+      </button>
+      <a mat-button routerLink="/invoices">Back</a>
+    </div>
+  </mat-card-content>
+</mat-card>

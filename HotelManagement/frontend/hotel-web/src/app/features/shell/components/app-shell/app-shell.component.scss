@@ -1,6 +1,14 @@
-.container { height: 100vh; }
+.topbar { position: sticky; top: 0; z-index: 1000; }
+.container { height: calc(100vh - 64px); }
+@media (max-width: 599px) { .container { height: calc(100vh - 56px); } }
 .sidenav { width: 220px; }
-.content { padding: 16px; }
+.content { padding: 24px; }
 .spacer { flex: 1 1 auto; }
 .user { margin-right: 12px; opacity: .85; }
 
+/* Align icons and labels nicely in nav */
+.sidenav .mat-mdc-list-item .mdc-list-item__content { align-items: center; }
+.sidenav a.active { background: rgba(0,0,0,0.04); }
+
+/* Page cards spacing so titles don't touch edges */
+.content > * { margin-top: 12px; }

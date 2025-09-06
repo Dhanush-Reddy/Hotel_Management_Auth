@@ -1,0 +1,87 @@
+<mat-card>
+  <mat-card-title>Invoices</mat-card-title>
+  <mat-card-content>
+    <div class="toolbar">
+      <mat-form-field appearance="outline" class="grow">
+        <mat-label>Search (guest/room/booking)</mat-label>
+        <input matInput [(ngModel)]="q" (keyup.enter)="load()">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Status</mat-label>
+        <mat-select [(ngModel)]="status">
+          <mat-option value="">All</mat-option>
+          <mat-option value="Unpaid">Unpaid</mat-option>
+          <mat-option value="Paid">Paid</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <button mat-raised-button class="search-btn" color="primary" (click)="load()" [disabled]="loading">
+        <mat-icon>search</mat-icon>&nbsp;Search
+      </button>
+    </div>
+
+    <div class="invoice-actions">
+      <mat-form-field appearance="outline">
+        <mat-label>Room No</mat-label>
+        <input matInput [(ngModel)]="roomNo" placeholder="e.g. 101">
+      </mat-form-field>
+      <button mat-stroked-button color="accent" (click)="addInvoiceByRoom()" [disabled]="loading || !roomNo">
+        <mat-icon>receipt_long</mat-icon>&nbsp;Add Invoice
+      </button>
+    </div>
+
+    <table mat-table [dataSource]="data" class="mat-elevation-z1">
+
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef>#</th>
+        <td mat-cell *matCellDef="let i">{{ i.id }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="bookingId">
+        <th mat-header-cell *matHeaderCellDef>Booking</th>
+        <td mat-cell *matCellDef="let i">#{{ i.bookingId }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="guestName">
+        <th mat-header-cell *matHeaderCellDef>Guest</th>
+        <td mat-cell *matCellDef="let i">{{ i.guestName }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="roomNumber">
+        <th mat-header-cell *matHeaderCellDef>Room</th>
+        <td mat-cell *matCellDef="let i">{{ i.roomNumber }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="totalAmount">
+        <th mat-header-cell *matHeaderCellDef>Total</th>
+        <td mat-cell *matCellDef="let i">₹ {{ i.totalAmount | number:'1.0-0' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef>Status</th>
+        <td mat-cell *matCellDef="let i">
+          <mat-chip-set>
+            <mat-chip [color]="i.status==='Paid' ? 'primary' : 'warn'" selected>{{ i.status }}</mat-chip>
+          </mat-chip-set>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="issuedAt">
+        <th mat-header-cell *matHeaderCellDef>Issued</th>
+        <td mat-cell *matCellDef="let i">{{ i.issuedAt | date:'mediumDate' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let i">
+          <button mat-button (click)="view(i)"><mat-icon>visibility</mat-icon> View</button>
+          <button mat-button color="accent" (click)="download(i)"><mat-icon>download</mat-icon> PDF</button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="cols"></tr>
+      <tr mat-row *matRowDef="let row; columns: cols;"></tr>
+    </table>
+  </mat-card-content>
+</mat-card>

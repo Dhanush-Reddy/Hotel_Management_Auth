@@ -70,7 +70,7 @@ export class BookingViewComponent implements OnInit {
     this.api.checkout(this.id).subscribe({ next: _ => {
       const roomId = this.b?.roomId;
       if (roomId) this.roomsApi.setStatus(roomId, { status: 'Available' }).subscribe({ next: ()=>{}, error: ()=>{} });
-      this.acting=false; this.load();
+      this.acting=false; this.router.navigate(['/invoices']);
     }, error: _ => this.acting=false });
   }
   cancel(){

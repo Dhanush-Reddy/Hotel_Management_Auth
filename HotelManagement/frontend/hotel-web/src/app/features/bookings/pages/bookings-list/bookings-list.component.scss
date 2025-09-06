@@ -1,3 +1,8 @@
 .filters { display:flex; gap:12px; align-items:center; margin-bottom:12px; flex-wrap: wrap; }
 .filters .spacer { flex:1; }
+/* Align fields and buttons */
+.filters .mat-mdc-form-field { margin: 0; margin-bottom: 0; }
+.filters mat-form-field { margin: 0; min-width: 220px; }
+/* Make action buttons match form-field height */
+.filters .search-btn { height: 56px; align-self: center; transform: translateY(-12px); }
 table { width: 100%; }

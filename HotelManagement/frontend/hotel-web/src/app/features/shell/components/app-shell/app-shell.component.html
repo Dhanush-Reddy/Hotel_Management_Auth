@@ -1,27 +1,38 @@
-<mat-sidenav-container class="container">
+<mat-toolbar color="primary" class="topbar">
+  <button mat-icon-button disabled><mat-icon>hotel</mat-icon></button>
+  <span class="app-title">Hotel Management</span>
+  <span class="spacer"></span>
+  <span *ngIf="isLoggedIn" class="user">{{ username }}</span>
+  <button *ngIf="isLoggedIn" mat-flat-button color="warn" (click)="logout()">
+    <mat-icon>logout</mat-icon>&nbsp;Logout
+  </button>
+</mat-toolbar>
+
+<mat-sidenav-container class="container under-toolbar">
   <mat-sidenav mode="side" [opened]="isLoggedIn" class="sidenav">
     <mat-nav-list *ngIf="isLoggedIn">
-      <a mat-list-item routerLink="/rooms"><mat-icon>meeting_room</mat-icon><span>Rooms</span></a>
-      <a mat-list-item routerLink="/guests"><mat-icon>group</mat-icon><span>Guests</span></a>
-      <a mat-list-item routerLink="/bookings"><mat-icon>event</mat-icon><span>Bookings</span></a>
-      <a mat-list-item routerLink="/invoices"><mat-icon>receipt_long</mat-icon><span>Invoices</span></a>
+      <a mat-list-item routerLink="/rooms" routerLinkActive="active">
+        <mat-icon matListItemIcon>meeting_room</mat-icon>
+        <span matLine>Rooms</span>
+      </a>
+      <a mat-list-item routerLink="/guests" routerLinkActive="active">
+        <mat-icon matListItemIcon>group</mat-icon>
+        <span matLine>Guests</span>
+      </a>
+      <a mat-list-item routerLink="/bookings" routerLinkActive="active">
+        <mat-icon matListItemIcon>event</mat-icon>
+        <span matLine>Bookings</span>
+      </a>
+      <a mat-list-item routerLink="/invoices" routerLinkActive="active">
+        <mat-icon matListItemIcon>receipt_long</mat-icon>
+        <span matLine>Invoices</span>
+      </a>
     </mat-nav-list>
   </mat-sidenav>
 
   <mat-sidenav-content>
-    <mat-toolbar color="primary">
-      <button mat-icon-button disabled><mat-icon>hotel</mat-icon></button>
-      <span>Hotel Management</span>
-      <span class="spacer"></span>
-      <span *ngIf="isLoggedIn" class="user">{{ username }}</span>
-      <button *ngIf="isLoggedIn" mat-stroked-button color="accent" (click)="logout()">
-        <mat-icon>logout</mat-icon>&nbsp;Logout
-      </button>
-    </mat-toolbar>
-
     <div class="content">
       <router-outlet></router-outlet>
     </div>
   </mat-sidenav-content>
 </mat-sidenav-container>
-
