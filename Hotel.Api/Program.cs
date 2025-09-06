@@ -8,6 +8,12 @@ using Hotel.Infrastructure.Features.Auth.Security;
 using Hotel.Application.Features.Rooms.Interfaces;
 using Hotel.Application.Features.Rooms.Services;
 using Hotel.Infrastructure.Features.Rooms.Repositories;
+using Hotel.Application.Features.Guests.Interfaces;
+using Hotel.Application.Features.Guests.Services;
+using Hotel.Infrastructure.Features.Guests.Repositories;
+using Hotel.Application.Features.Bookings.Interfaces;
+using Hotel.Application.Features.Bookings.Services;
+using Hotel.Infrastructure.Features.Bookings.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -24,9 +30,16 @@ builder.Services.AddScoped<IJwtTokenFactory, JwtTokenFactory>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IRoomRepository, RoomRepository>();
 builder.Services.AddScoped<IRoomService, RoomService>();
+builder.Services.AddScoped<IGuestRepository, GuestRepository>();
+builder.Services.AddScoped<IGuestService, GuestService>();
+builder.Services.AddScoped<IBookingRepository, BookingRepository>();
+builder.Services.AddScoped<IBookingService, BookingService>();
 
 // JWT setup
 var key = Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!);
+// Keep JWT claim types as sent (don't remap 'sub' -> NameIdentifier)
+System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.DefaultMapInboundClaims = false;
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
