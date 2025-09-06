@@ -5,6 +5,9 @@ using Hotel.Application.Common.Interfaces;
 using Hotel.Infrastructure.Common.Data;
 using Hotel.Infrastructure.Features.Users.Repositories;
 using Hotel.Infrastructure.Features.Auth.Security;
+using Hotel.Application.Features.Rooms.Interfaces;
+using Hotel.Application.Features.Rooms.Services;
+using Hotel.Infrastructure.Features.Rooms.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -19,6 +22,8 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 builder.Services.AddScoped<IJwtTokenFactory, JwtTokenFactory>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IRoomRepository, RoomRepository>();
+builder.Services.AddScoped<IRoomService, RoomService>();
 
 // JWT setup
 var key = Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!);
