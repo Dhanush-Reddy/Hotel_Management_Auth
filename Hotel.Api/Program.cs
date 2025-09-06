@@ -14,6 +14,9 @@ using Hotel.Infrastructure.Features.Guests.Repositories;
 using Hotel.Application.Features.Bookings.Interfaces;
 using Hotel.Application.Features.Bookings.Services;
 using Hotel.Infrastructure.Features.Bookings.Repositories;
+using Hotel.Application.Features.Billing.Interfaces;
+using Hotel.Application.Features.Billing.Services;
+using Hotel.Infrastructure.Features.Billing.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -34,6 +37,8 @@ builder.Services.AddScoped<IGuestRepository, GuestRepository>();
 builder.Services.AddScoped<IGuestService, GuestService>();
 builder.Services.AddScoped<IBookingRepository, BookingRepository>();
 builder.Services.AddScoped<IBookingService, BookingService>();
+builder.Services.AddScoped<IInvoiceRepository, InvoiceRepository>();
+builder.Services.AddScoped<IInvoiceService, InvoiceService>();
 
 // JWT setup
 var key = Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!);
