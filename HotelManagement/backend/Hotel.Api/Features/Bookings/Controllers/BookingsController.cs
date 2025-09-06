@@ -70,6 +70,42 @@ namespace Hotel.Api.Features.Bookings.Controllers
             return Ok(dto);
         }
 
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> Update(int id, [FromBody] BookingCreateRequest req)
+        {
+            try
+            {
+                int guestId = req.GuestId ?? 0;
+                if (!req.GuestId.HasValue && req.Guest != null && !string.IsNullOrWhiteSpace(req.Guest.FullName))
+                {
+                    guestId = await _guests.CreateAsync(req.Guest.FullName, req.Guest.Phone, req.Guest.Email, req.Guest.IdProof);
+                }
+                else if (req.GuestId.HasValue)
+                {
+                    guestId = req.GuestId.Value;
+                }
+                else
+                {
+                    return BadRequest("Provide guestId or guest payload");
+                }
+
+                await _bookings.UpdateAsync(id, req.RoomId, guestId, req.StartDate, req.EndDate, req.NightlyRate, req.Notes);
+                return NoContent();
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { error = ex.Message });
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+        }
+
         [HttpGet]
         public async Task<IActionResult> List([FromQuery] int page = 1, [FromQuery] int pageSize = 50, [FromQuery] int? roomId = null, [FromQuery] int? guestId = null, [FromQuery] string? status = null, [FromQuery] DateTime? from = null, [FromQuery] DateTime? to = null)
         {
@@ -85,29 +121,91 @@ namespace Hotel.Api.Features.Bookings.Controllers
         [HttpPut("{id:int}/confirm")]
         public async Task<IActionResult> Confirm(int id)
         {
-            await _bookings.ConfirmAsync(id);
-            return NoContent();
+            try
+            {
+                await _bookings.ConfirmAsync(id);
+                return NoContent();
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { error = ex.Message });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
         }
 
         [HttpPut("{id:int}/checkin")]
         public async Task<IActionResult> CheckIn(int id)
         {
-            await _bookings.CheckInAsync(id, DateTime.UtcNow);
-            return NoContent();
+            try
+            {
+                await _bookings.CheckInAsync(id);
+                return NoContent();
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { error = ex.Message });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
         }
 
         [HttpPut("{id:int}/checkout")]
         public async Task<IActionResult> CheckOut(int id)
         {
-            await _bookings.CheckOutAsync(id, DateTime.UtcNow);
-            return NoContent();
+            try
+            {
+                await _bookings.CheckOutAsync(id);
+                return NoContent();
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { error = ex.Message });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
         }
 
         [HttpPut("{id:int}/cancel")]
         public async Task<IActionResult> Cancel(int id)
         {
-            await _bookings.CancelAsync(id);
-            return NoContent();
+            try
+            {
+                await _bookings.CancelAsync(id);
+                return NoContent();
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { error = ex.Message });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+        }
+
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            try
+            {
+                await _bookings.DeleteAsync(id);
+                return NoContent();
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { error = ex.Message });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
         }
     }
 }

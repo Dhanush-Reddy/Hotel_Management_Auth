@@ -62,5 +62,11 @@ OFFSET @offset ROWS FETCH NEXT @ps ROWS ONLY;";
             var sql = @"UPDATE Guests SET FullName=@FullName, Phone=@Phone, Email=@Email, IdProof=@IdProof WHERE Id=@Id;";
             await conn.ExecuteAsync(sql, guest);
         }
+
+        public async Task DeleteAsync(int id)
+        {
+            using var conn = _factory.CreateConnection();
+            await conn.ExecuteAsync("DELETE FROM Guests WHERE Id=@Id;", new { Id = id });
+        }
     }
 }

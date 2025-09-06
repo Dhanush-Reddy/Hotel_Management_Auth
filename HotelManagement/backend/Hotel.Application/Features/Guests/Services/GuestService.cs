@@ -54,5 +54,7 @@ namespace Hotel.Application.Features.Guests.Services
             existing.IdProof= string.IsNullOrWhiteSpace(idProof)? existing.IdProof : idProof.Trim();
             await _repo.UpdateAsync(existing);
         }
+
+        public Task DeleteAsync(int id) => _repo.DeleteAsync(id);
     }
 }

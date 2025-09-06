@@ -5,7 +5,9 @@ import { NotFoundComponent } from './shared/components/not-found/not-found.compo
 const routes: Routes = [
   { path: 'login', loadChildren: () => import('./features/auth/auth.module').then(m => m.AuthModule) },
   { path: 'rooms', loadChildren: () => import('./features/rooms/rooms.module').then(m => m.RoomsModule) },
+  { path: 'guests', loadChildren: () => import('./features/guests/guests.module').then(m => m.GuestsModule) },
   { path: '', redirectTo: 'rooms', pathMatch: 'full' },
+  { path: 'bookings', loadChildren: () => import('./features/bookings/bookings.module').then(m => m.BookingsModule) },
   { path: '**', component: NotFoundComponent }
 ];
 
@@ -14,4 +16,3 @@ const routes: Routes = [
   exports: [RouterModule]
 })
 export class AppRoutingModule {}
-

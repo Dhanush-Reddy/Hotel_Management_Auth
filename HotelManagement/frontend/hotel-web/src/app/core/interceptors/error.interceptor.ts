@@ -11,10 +11,10 @@ export class ErrorInterceptor implements HttpInterceptor {
     return next.handle(req).pipe(
       catchError((err: HttpErrorResponse) => {
         if (err.status === 401) this.auth.logout();
-        alert(err.error?.message ?? `Error ${err.status}`);
+        const message = (err.error?.message as string) ?? `Error ${err.status}`;
+        alert(message);
         return throwError(() => err);
       })
     );
   }
 }
-

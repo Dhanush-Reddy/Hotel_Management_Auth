@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Hotel.Application.Features.Bookings.Interfaces;
 using Hotel.Application.Features.Rooms.Interfaces;
+using Hotel.Application.Common.Interfaces;
 
 namespace Hotel.Application.Features.Bookings.Services
 {
@@ -10,11 +11,13 @@ namespace Hotel.Application.Features.Bookings.Services
     {
         private readonly IBookingRepository _repo;
         private readonly IRoomRepository _rooms;
+        private readonly IHotelClock _clock;
 
-        public BookingService(IBookingRepository repo, IRoomRepository rooms)
+        public BookingService(IBookingRepository repo, IRoomRepository rooms, IHotelClock clock)
         {
             _repo = repo;
             _rooms = rooms;
+            _clock = clock;
         }
 
         public async Task<int> CreateAsync(int roomId, int guestId, DateTime startDate, DateTime endDate, decimal? nightlyRate, string? notes, int createdByUserId)
@@ -47,35 +50,61 @@ namespace Hotel.Application.Features.Bookings.Services
             await _repo.UpdateStatusAsync(id, "Confirmed");
         }
 
-        public async Task CheckInAsync(int id, DateTime todayUtc)
+        public async Task CheckInAsync(int id)
         {
             var b = await _repo.GetByIdAsync(id) ?? throw new KeyNotFoundException("Booking not found");
             if (!string.Equals(b.Status, "Confirmed", StringComparison.OrdinalIgnoreCase)) throw new InvalidOperationException("Only Confirmed bookings can be checked in");
-            var today = todayUtc.Date;
-            if (!(b.StartDate <= today && today < b.EndDate)) throw new InvalidOperationException("Check-in not within stay window");
             await _repo.UpdateStatusAsync(id, "CheckedIn");
-            await _rooms.SetStatusAsync(b.RoomId, "Occupied");
         }
 
-        public async Task CheckOutAsync(int id, DateTime todayUtc)
+        public async Task CheckOutAsync(int id)
         {
             var b = await _repo.GetByIdAsync(id) ?? throw new KeyNotFoundException("Booking not found");
             if (!string.Equals(b.Status, "CheckedIn", StringComparison.OrdinalIgnoreCase)) throw new InvalidOperationException("Only CheckedIn bookings can be checked out");
-            var today = todayUtc.Date;
-            if (today < b.StartDate) throw new InvalidOperationException("Checkout cannot be before start");
             await _repo.UpdateStatusAsync(id, "CheckedOut");
-            // naive: free room; smarter: check if another booking is active
-            await _rooms.SetStatusAsync(b.RoomId, "Available");
         }
 
         public async Task CancelAsync(int id)
         {
             var b = await _repo.GetByIdAsync(id) ?? throw new KeyNotFoundException("Booking not found");
-            if (string.Equals(b.Status, "CheckedOut", StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(b.Status, "Cancelled", StringComparison.OrdinalIgnoreCase))
-                throw new InvalidOperationException("Cannot cancel this booking");
+            if (string.Equals(b.Status, "Cancelled", StringComparison.OrdinalIgnoreCase))
+                throw new InvalidOperationException("Booking already cancelled");
             await _repo.UpdateStatusAsync(id, "Cancelled");
+        }
+
+        public async Task UpdateAsync(int id, int roomId, int guestId, DateTime startDate, DateTime endDate, decimal? nightlyRate, string? notes)
+        {
+            var existing = await _repo.GetByIdAsync(id) ?? throw new KeyNotFoundException("Booking not found");
+            if (startDate.Date >= endDate.Date) throw new ArgumentException("StartDate must be before EndDate");
+            // Allow edits only when not Completed/Cancelled
+            if (string.Equals(existing.Status, "CheckedOut", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(existing.Status, "Cancelled", StringComparison.OrdinalIgnoreCase))
+                throw new InvalidOperationException("Cannot edit this booking");
+
+            var updated = new Domain.Features.Bookings.Entities.Booking
+            {
+                Id = id,
+                RoomId = roomId,
+                GuestId = guestId,
+                StartDate = startDate.Date,
+                EndDate = endDate.Date,
+                Status = existing.Status,
+                NightlyRate = nightlyRate,
+                Notes = notes,
+                CreatedByUserId = existing.CreatedByUserId,
+                CreatedAt = existing.CreatedAt
+            };
+            await _repo.UpdateAsync(updated);
+        }
+
+        public async Task DeleteAsync(int id)
+        {
+            var existing = await _repo.GetByIdAsync(id) ?? throw new KeyNotFoundException("Booking not found");
+            var isCancelled = string.Equals(existing.Status, "Cancelled", StringComparison.OrdinalIgnoreCase);
+            var isCheckedOut = string.Equals(existing.Status, "CheckedOut", StringComparison.OrdinalIgnoreCase);
+            if (!isCancelled && !isCheckedOut)
+                throw new InvalidOperationException("Only cancelled or checked-out bookings can be deleted");
+            await _repo.DeleteAsync(id);
         }
     }
 }
-

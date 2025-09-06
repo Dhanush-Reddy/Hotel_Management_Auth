@@ -17,18 +17,19 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 
-// Datepicker (optional; uncomment if/when needed)
-// import { MatDatepickerModule } from '@angular/material/datepicker';
-// import { MatNativeDateModule } from '@angular/material/core';
+// Datepicker
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 
 @NgModule({
   exports: [
     MatToolbarModule, MatSidenavModule, MatListModule, MatIconModule,
     MatButtonModule, MatCardModule, MatFormFieldModule, MatInputModule,
     MatSelectModule, MatTableModule, MatSnackBarModule, MatMenuModule,
-    MatChipsModule, MatProgressSpinnerModule,
-    // MatDatepickerModule, MatNativeDateModule
+    MatChipsModule, MatProgressSpinnerModule, MatButtonToggleModule,
+    MatDatepickerModule, MatNativeDateModule
   ]
 })
 export class MaterialModule {}

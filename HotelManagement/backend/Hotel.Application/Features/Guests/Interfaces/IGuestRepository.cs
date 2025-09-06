@@ -12,5 +12,6 @@ namespace Hotel.Application.Features.Guests.Interfaces
         Task<Guest?> FindByPhoneAsync(string phone);
         Task<IEnumerable<Guest>> SearchAsync(int page = 1, int pageSize = 50, string? q = null);
         Task UpdateAsync(Guest guest);
+        Task DeleteAsync(int id);
     }
 }

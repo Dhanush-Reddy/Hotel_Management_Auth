@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Hotel.Application.Features.Guests.Interfaces;
 using Hotel.Api.Features.Guests.DTOs;
+using Microsoft.Data.SqlClient;
 
 namespace Hotel.Api.Features.Guests.Controllers
 {
@@ -48,6 +49,20 @@ namespace Hotel.Api.Features.Guests.Controllers
             await _guests.UpdateAsync(id, req.FullName, req.Phone, req.Email, req.IdProof);
             return NoContent();
         }
+
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            try
+            {
+                await _guests.DeleteAsync(id);
+                return NoContent();
+            }
+            catch (SqlException ex) when (ex.Number == 547)
+            {
+                // FK violation: there are related records (e.g., Bookings referencing this Guest)
+                return Conflict("Guest cannot be deleted because there are related bookings.");
+            }
+        }
     }
 }
-

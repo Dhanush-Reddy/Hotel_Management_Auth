@@ -1,0 +1,26 @@
+<mat-card *ngIf="b">
+  <mat-card-title>Booking #{{ b.id }}</mat-card-title>
+  <mat-card-content>
+    <div class="actions top">
+      <button mat-button (click)="back()"><mat-icon>arrow_back</mat-icon> Back</button>
+      <a mat-button color="primary" [routerLink]="['/bookings', b.id, 'edit']"><mat-icon>edit</mat-icon> Edit</a>
+    </div>
+
+    <p><strong>Room:</strong> {{ roomLabel || b.roomId }}</p>
+    <p><strong>Guest:</strong> {{ guestLabel || b.guestId }}</p>
+    <p><strong>Dates:</strong> {{ b.startDate | date:'mediumDate' }} → {{ b.endDate | date:'mediumDate' }}</p>
+    <p><strong>Status:</strong> {{ b.status }}</p>
+    <p><strong>Nightly rate:</strong> $ {{ b.nightlyRate | number:'1.0-0' }}</p>
+    <p *ngIf="b.notes"><strong>Notes:</strong> {{ b.notes }}</p>
+
+    <div class="actions">
+      <button mat-raised-button color="primary" (click)="confirm()" [disabled]="acting || !canConfirm()">Confirm</button>
+      <button mat-raised-button color="accent" (click)="checkin()" [disabled]="acting || !canCheckin()">Check-in</button>
+      <button mat-raised-button color="primary" (click)="checkout()" [disabled]="acting || !canCheckout()">Check-out</button>
+      <button mat-raised-button color="warn" (click)="cancel()" [disabled]="acting || !canCancel()">Cancel</button>
+      <button mat-raised-button color="warn" *ngIf="b.status==='Cancelled' || b.status==='CheckedOut'" (click)="del()" [disabled]="acting">
+        <mat-icon>delete</mat-icon> Delete
+      </button>
+    </div>
+  </mat-card-content>
+</mat-card>

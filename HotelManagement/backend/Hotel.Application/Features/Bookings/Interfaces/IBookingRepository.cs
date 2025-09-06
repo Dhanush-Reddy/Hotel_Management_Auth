@@ -12,6 +12,7 @@ namespace Hotel.Application.Features.Bookings.Interfaces
         Task<IEnumerable<Booking>> ListAsync(int page = 1, int pageSize = 50, int? roomId = null, int? guestId = null, string? status = null, DateTime? from = null, DateTime? to = null);
         Task<bool> ExistsOverlapAsync(int roomId, DateTime start, DateTime end, int? excludeBookingId = null);
         Task UpdateStatusAsync(int id, string status);
+        Task UpdateAsync(Booking b);
+        Task DeleteAsync(int id);
     }
 }
-

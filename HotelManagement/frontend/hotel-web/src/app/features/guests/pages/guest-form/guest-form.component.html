@@ -1,0 +1,29 @@
+<mat-card>
+  <mat-card-title>{{ id ? 'Edit Guest' : 'Create Guest' }}</mat-card-title>
+  <mat-card-content>
+    <form (ngSubmit)="save()">
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>Full Name</mat-label>
+        <input matInput [(ngModel)]="model.fullName" name="fullName" required>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>Phone</mat-label>
+        <input matInput [(ngModel)]="model.phone" name="phone">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>Email</mat-label>
+        <input matInput [(ngModel)]="model.email" name="email">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>ID Proof</mat-label>
+        <input matInput [(ngModel)]="model.idProof" name="idProof">
+      </mat-form-field>
+
+      <button mat-flat-button color="primary" [disabled]="saving">{{ id ? 'Update' : 'Create' }}</button>
+      <a mat-button routerLink="/guests">Cancel</a>
+    </form>
+  </mat-card-content>
+</mat-card>

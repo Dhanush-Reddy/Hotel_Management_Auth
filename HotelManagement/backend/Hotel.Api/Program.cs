@@ -14,6 +14,8 @@ using Hotel.Infrastructure.Features.Guests.Repositories;
 using Hotel.Application.Features.Bookings.Interfaces;
 using Hotel.Application.Features.Bookings.Services;
 using Hotel.Infrastructure.Features.Bookings.Repositories;
+using Hotel.Application.Common.Interfaces;
+using Hotel.Infrastructure.Common.Time;
 using Hotel.Application.Features.Billing.Interfaces;
 using Hotel.Application.Features.Billing.Services;
 using Hotel.Infrastructure.Features.Billing.Repositories;
@@ -53,6 +55,7 @@ builder.Services.AddScoped<IBookingRepository, BookingRepository>();
 builder.Services.AddScoped<IBookingService, BookingService>();
 builder.Services.AddScoped<IInvoiceRepository, InvoiceRepository>();
 builder.Services.AddScoped<IInvoiceService, InvoiceService>();
+builder.Services.AddSingleton<IHotelClock, HotelClock>();
 
 // JWT setup
 var key = Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!);

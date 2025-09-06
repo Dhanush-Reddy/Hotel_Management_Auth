@@ -1,0 +1,67 @@
+<mat-card>
+  <mat-card-title>New Booking</mat-card-title>
+  <mat-card-content>
+    <form (ngSubmit)="save()">
+      <div class="grid">
+        <mat-form-field appearance="outline" class="full">
+          <mat-label>Room</mat-label>
+          <mat-select [(ngModel)]="roomId" name="roomId" required>
+            <mat-option *ngFor="let r of rooms" [value]="r.id">{{ r.roomNumber }} (cap {{ r.capacity }})</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-button-toggle-group [(ngModel)]="useExistingGuest" name="useExistingGuest" class="full" [disabled]="!!editId">
+          <mat-button-toggle [value]="true">Existing guest</mat-button-toggle>
+          <mat-button-toggle [value]="false">New guest</mat-button-toggle>
+        </mat-button-toggle-group>
+
+        <ng-container *ngIf="useExistingGuest; else newGuestTpl">
+          <mat-form-field appearance="outline" class="full">
+            <mat-label>Guest</mat-label>
+            <mat-select [(ngModel)]="guestId" name="guestId">
+              <mat-option *ngFor="let g of guests" [value]="g.id">{{ g.fullName }} — {{ g.email || g.phone || 'N/A' }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </ng-container>
+
+        <ng-template #newGuestTpl>
+          <mat-form-field appearance="outline" class="full"><mat-label>Full name</mat-label><input matInput [(ngModel)]="newGuest.fullName" name="fullName"></mat-form-field>
+          <mat-form-field appearance="outline" class="full"><mat-label>Phone</mat-label><input matInput [(ngModel)]="newGuest.phone" name="phone"></mat-form-field>
+          <mat-form-field appearance="outline" class="full"><mat-label>Email</mat-label><input matInput [(ngModel)]="newGuest.email" name="email"></mat-form-field>
+          <mat-form-field appearance="outline" class="full"><mat-label>ID Proof</mat-label><input matInput [(ngModel)]="newGuest.idProof" name="idProof"></mat-form-field>
+        </ng-template>
+
+        <mat-form-field appearance="outline" class="full">
+          <mat-label>Check-in</mat-label>
+          <input matInput [matDatepicker]="dp1" [(ngModel)]="start" name="start" required>
+          <mat-datepicker-toggle matSuffix [for]="dp1"></mat-datepicker-toggle>
+          <mat-datepicker #dp1></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full">
+          <mat-label>Check-out</mat-label>
+          <input matInput [matDatepicker]="dp2" [(ngModel)]="end" name="end" required>
+          <mat-datepicker-toggle matSuffix [for]="dp2"></mat-datepicker-toggle>
+          <mat-datepicker #dp2></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full">
+          <mat-label>Nightly rate</mat-label>
+          <input matInput type="number" min="0" [(ngModel)]="nightlyRate" name="nightlyRate" required>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full">
+          <mat-label>Notes</mat-label>
+          <textarea matInput rows="3" [(ngModel)]="notes" name="notes"></textarea>
+        </mat-form-field>
+
+        <div class="actions">
+          <button mat-flat-button color="primary" type="submit" [disabled]="saving">
+            <mat-icon>save</mat-icon>&nbsp;{{ editId ? 'Save Changes' : 'Create Booking' }}
+          </button>
+          <a mat-button routerLink="/bookings">Cancel</a>
+        </div>
+      </div>
+    </form>
+  </mat-card-content>
+  </mat-card>

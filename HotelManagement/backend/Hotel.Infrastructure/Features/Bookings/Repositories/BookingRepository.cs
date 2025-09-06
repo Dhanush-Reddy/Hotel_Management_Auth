@@ -95,5 +95,35 @@ WHERE RoomId = @roomId
             using var conn = _factory.CreateConnection();
             await conn.ExecuteAsync("UPDATE Bookings SET Status=@status WHERE Id=@id;", new { id, status });
         }
+
+        public async Task UpdateAsync(Booking b)
+        {
+            using var conn = _factory.CreateConnection();
+            // overlap check excluding this booking (exclusive EndDate)
+            var conflictSql = @"
+SELECT COUNT(1)
+FROM Bookings
+WHERE RoomId = @RoomId
+  AND Status IN ('Pending','Confirmed','CheckedIn')
+  AND (@StartDate < EndDate AND StartDate < @EndDate)
+  AND Id <> @Id;";
+
+            var conflicts = await conn.ExecuteScalarAsync<int>(conflictSql, new { b.RoomId, b.StartDate, b.EndDate, b.Id });
+            if (conflicts > 0)
+                throw new InvalidOperationException("Overlap detected");
+
+            var sql = @"
+UPDATE Bookings
+SET RoomId=@RoomId, GuestId=@GuestId, StartDate=@StartDate, EndDate=@EndDate,
+    NightlyRate=@NightlyRate, Notes=@Notes
+WHERE Id=@Id;";
+            await conn.ExecuteAsync(sql, b);
+        }
+
+        public async Task DeleteAsync(int id)
+        {
+            using var conn = _factory.CreateConnection();
+            await conn.ExecuteAsync("DELETE FROM Bookings WHERE Id=@id;", new { id });
+        }
     }
 }
