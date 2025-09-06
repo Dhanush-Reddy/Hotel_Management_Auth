@@ -22,6 +22,20 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 var builder = WebApplication.CreateBuilder(args);
 
+const string CorsPolicy = "Frontend";
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(CorsPolicy, policy =>
+        policy.WithOrigins(
+                "http://localhost:4200",   // Angular dev
+                "https://localhost:4200"   // if you run https dev
+            )
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials()
+    );
+});
+
 // Repository registration (SQL Server)
 var connStr = builder.Configuration.GetConnectionString("Default");
 builder.Services.AddSingleton(new SqlConnectionFactory(connStr!));
@@ -106,6 +120,7 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
+app.UseCors(CorsPolicy);
 app.UseAuthentication();
 app.UseAuthorization();
 

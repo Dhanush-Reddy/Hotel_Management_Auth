@@ -1,0 +1,79 @@
+<mat-card>
+  <mat-card-title>Rooms</mat-card-title>
+  <mat-card-content>
+    <div class="filters">
+      <mat-form-field appearance="outline">
+        <mat-label>Search room #</mat-label>
+        <input matInput [(ngModel)]="q" (ngModelChange)="onFilterChange()" (keyup.enter)="load()">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Status</mat-label>
+        <mat-select [(ngModel)]="status" (selectionChange)="onFilterChange()">
+          <mat-option value="">All</mat-option>
+          <mat-option value="Available">Available</mat-option>
+          <mat-option value="Occupied">Occupied</mat-option>
+          <mat-option value="OutOfService">Out of Service</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <button mat-raised-button color="primary" (click)="load()" [disabled]="loading">
+        <mat-icon>search</mat-icon>&nbsp;Search
+      </button>
+
+      <span class="spacer"></span>
+      <button mat-stroked-button color="accent" *ngIf="auth.hasRole('Admin')" (click)="newRoom()">
+        <mat-icon>add</mat-icon>&nbsp;New Room
+      </button>
+    </div>
+
+    <table mat-table [dataSource]="data" class="mat-elevation-z1">
+
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef>#</th>
+        <td mat-cell *matCellDef="let r">{{ r.id }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="roomNumber">
+        <th mat-header-cell *matHeaderCellDef>Room</th>
+        <td mat-cell *matCellDef="let r">{{ r.roomNumber }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="capacity">
+        <th mat-header-cell *matHeaderCellDef>Capacity</th>
+        <td mat-cell *matCellDef="let r">{{ r.capacity }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef>Status</th>
+        <td mat-cell *matCellDef="let r">
+          <mat-chip-set>
+            <mat-chip [color]="r.status==='Available' ? 'primary' : (r.status==='Occupied' ? 'warn' : 'accent')" selected>
+              {{ r.status }}
+            </mat-chip>
+          </mat-chip-set>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let r">
+          <button mat-button (click)="edit(r)"><mat-icon>edit</mat-icon> Edit</button>
+          <button mat-button color="warn" *ngIf="auth.hasRole('Admin')" (click)="del(r)">
+            <mat-icon>delete</mat-icon> Delete
+          </button>
+
+          <mat-menu #m="matMenu">
+            <button mat-menu-item (click)="setStatus(r,'Available')">Available</button>
+            <button mat-menu-item (click)="setStatus(r,'Occupied')">Occupied</button>
+            <button mat-menu-item (click)="setStatus(r,'OutOfService')">Out of Service</button>
+          </mat-menu>
+          <button mat-stroked-button [matMenuTriggerFor]="m"><mat-icon>sync_alt</mat-icon> Set Status</button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="cols"></tr>
+      <tr mat-row *matRowDef="let row; columns: cols;"></tr>
+    </table>
+  </mat-card-content>
+</mat-card>
